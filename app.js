@@ -3,7 +3,8 @@ const app = express();
 const router = express.Router();
 
 const path = __dirname + '/views/';
-const port = 8080;
+const PORT = 8080;
+const HOST = '0.0.0.0';
 
 router.use(function (req,res,next) {
   console.log('/' + req.method);
@@ -21,6 +22,5 @@ router.get('/user', function(req,res){
 app.use(express.static(path));
 app.use('/', router);
 
-app.listen(port, function () {
-  console.log('node app listening on port 8080!')
-})
+app.listen(PORT, HOST);
+console.log(`Running on http://${HOST}:${PORT}`);
