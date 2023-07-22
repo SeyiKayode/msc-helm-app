@@ -39,5 +39,6 @@ phases:
       - helm package $HELM_CHART_NAME
       - export HELM_EXPERIMENTAL_OCI=1
       - helm push $HELM_CHART_NAME-0.1.0.tgz oci://$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/
-      - eksctl utils write-kubeconfig --cluster=$AWS_CLUSTER_NAME --region=$AWS_DEFAULT_REGION
+      # - eksctl utils write-kubeconfig --cluster=$AWS_CLUSTER_NAME --region=$AWS_DEFAULT_REGION
+      - aws eks update-kubeconfig --name $AWS_CLUSTER_NAME --region=$AWS_DEFAULT_REGION
       - helm install $HELM_CHART_NAME oci://$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$HELM_CHART_NAME
