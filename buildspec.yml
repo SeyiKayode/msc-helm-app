@@ -1,6 +1,11 @@
 version: 0.2
 run-as: root
 
+env:
+  parameter-store:
+    AWS_ACCESS_KEY_ID: "/test/kayode/access-key-id"
+    AWS_SECRET_ACCESS_KEY: "/test/kayode/access-key-secret"
+
 phases:
   install:
     commands:
@@ -15,43 +20,45 @@ phases:
       - chmod +x scripts/prerequisites.sh
       - sh scripts/prerequisites.sh
 
-  pre_build:
-    commands:
+  # pre_build:
+  #   commands:
       # Extracting AWS Credential Information using STS Assume Role for kubectl
-      - echo "Setting Environment Variables related to AWS CLI for Kube Config Setup"          
+
       # - CREDENTIALS=$(aws sts assume-role --role-arn arn:aws:iam::442207448169:role/EksCodeBuildKubectlRole --role-session-name codebuild-kubectl --duration-seconds 900)
       # - export AWS_ACCESS_KEY_ID="$(echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId')"
       # - export AWS_SECRET_ACCESS_KEY="$(echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey')"
       # - export AWS_SESSION_TOKEN="$(echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken')"
       # - export AWS_EXPIRATION=$(echo ${CREDENTIALS} | jq -r '.Credentials.Expiration')
-      - echo Logging in to Amazon EKS...
-      - aws eks update-kubeconfig --name $AWS_CLUSTER_NAME --region $AWS_DEFAULT_REGION --role-arn arn:aws:iam::442207448169:role/test
-      # - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $AWS_CLUSTER_NAME
-      - echo check config
-      - kubectl config view --minify
-      - echo check kubectl access
-      - kubectl get svc
-      - echo verifying aws cli version
-      - aws --version
-      - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      
-  build:
-    commands:
-      - echo Build started on `date`
-      - echo Building the Docker image...
-      - docker build -t $IMAGE_REPO_NAME .
-      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG 
 
-  post_build:
-    commands:
-      - echo Build completed on `date`
-      - echo Pushing the Docker image...
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
-      - echo Push the latest image to cluster
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | helm registry login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      - helm package $HELM_CHART_NAME
-      - export HELM_EXPERIMENTAL_OCI=1
-      - helm push $HELM_CHART_NAME-0.1.0.tgz oci://$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/
+  #     - echo Logging in to Amazon EKS...
+  #     - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $AWS_CLUSTER_NAME
+  #     - echo check config
+  #     - kubectl config view --minify
+  #     - echo check kubectl access
+  #     - kubectl get svc
+  #     - echo verifying aws cli version
+  #     - aws --version
+  #     - echo Logging in to Amazon ECR...
+  #     - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      
+  # build:
+  #   commands:
+  #     - echo Build started on `date`
+  #     - echo Building the Docker image...
+  #     - docker build -t $IMAGE_REPO_NAME .
+  #     - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG 
+
+  # post_build:
+  #   commands:
+      # - echo Build completed on `date`
+      # - echo Pushing the Docker image...
+      # - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      # - echo Push the latest image to cluster
+      # - aws ecr get-login-password --region $AWS_DEFAULT_REGION | helm registry login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      # - helm package $HELM_CHART_NAME
+      # - export HELM_EXPERIMENTAL_OCI=1
+      # - helm push $HELM_CHART_NAME-0.1.0.tgz oci://$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/
+
       # - eksctl utils write-kubeconfig --cluster=$AWS_CLUSTER_NAME --region=$AWS_DEFAULT_REGION
-      - helm install $HELM_CHART_NAME oci://$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$HELM_CHART_NAME
+
+      # - helm install $HELM_CHART_NAME oci://$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$HELM_CHART_NAME
