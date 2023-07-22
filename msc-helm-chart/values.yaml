@@ -2,10 +2,10 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 2
+replicaCount: 1
 
 image:
-  repository: seyisamson/nodejs-sample-app
+  repository: 442207448169.dkr.ecr.us-east-1.amazonaws.com/node-sample-app
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest
