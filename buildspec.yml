@@ -17,6 +17,12 @@ phases:
 
   pre_build:
     commands:
+      - echo Logging in to Amazon EKS...
+      - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $AWS_CLUSTER_NAME
+      - echo check config
+      - kubectl config view --minify
+      - echo check kubectl access
+      - kubectl get svc
       - echo verifying aws cli version
       - aws --version
       - echo Logging in to Amazon ECR...
@@ -40,5 +46,4 @@ phases:
       - export HELM_EXPERIMENTAL_OCI=1
       - helm push $HELM_CHART_NAME-0.1.0.tgz oci://$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/
       # - eksctl utils write-kubeconfig --cluster=$AWS_CLUSTER_NAME --region=$AWS_DEFAULT_REGION
-      - aws eks update-kubeconfig --name $AWS_CLUSTER_NAME --region=$AWS_DEFAULT_REGION
       - helm install $HELM_CHART_NAME oci://$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$HELM_CHART_NAME
