@@ -25,7 +25,7 @@ phases:
       # - export AWS_SESSION_TOKEN="$(echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken')"
       # - export AWS_EXPIRATION=$(echo ${CREDENTIALS} | jq -r '.Credentials.Expiration')
       - echo Logging in to Amazon EKS...
-      - aws eks update-kubeconfig --name $AWS_CLUSTER_NAME --region $AWS_DEFAULT_REGION --role-arn arn:aws:iam::442207448169:role/EksCodeBuildKubectlRole
+      - aws eks update-kubeconfig --name $AWS_CLUSTER_NAME --region $AWS_DEFAULT_REGION --role-arn arn:aws:iam::442207448169:role/test
       # - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $AWS_CLUSTER_NAME
       - echo check config
       - kubectl config view --minify
