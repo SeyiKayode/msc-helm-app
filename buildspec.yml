@@ -62,7 +62,7 @@ phases:
     commands:
       - echo Push the latest image to cluster
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | helm registry login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      - helm upgrade --install $HELM_CHART_NAME stable/app --version 0.1.0 --namespace dev
+      - helm upgrade --install $HELM_CHART_NAME stabl/app --version 0.1.0 --namespace dev
       # - chmod +x scripts/deploy_app.sh
       # - sh scripts/deploy_app.sh
-      - helm upgrade -i $EKS_CODEBUILD_APP_NAME-$ENV helm_charts/$EKS_CODEBUILD_APP_NAME -f helm_charts/$EKS_CODEBUILD_APP_NAME/values.$ENV.yaml --set image.repository=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME --set image.tag=$CODEBUILD_RESOLVED_SOURCE_VERSION
+      # - helm upgrade --instal $HELM_CHART_NAME helm_charts/$EKS_CODEBUILD_APP_NAME -f helm_charts/$EKS_CODEBUILD_APP_NAME/values.$ENV.yaml --set image.repository=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME --set image.tag=$CODEBUILD_RESOLVED_SOURCE_VERSION
