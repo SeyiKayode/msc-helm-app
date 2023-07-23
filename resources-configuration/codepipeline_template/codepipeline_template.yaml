@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Create ECR and EKS using Cloudformation
+Description: Create CodePipeline Resources Cloudformation
 
 Parameters:
   ConnectionArn: 
@@ -229,5 +229,5 @@ Resources:
               Configuration:
                 ProjectName: !Ref CodeBuildDeployProject
               InputArtifacts:
-                - Name: BuildOutput
+                - Name: SourceArtifact
               RunOrder: 1

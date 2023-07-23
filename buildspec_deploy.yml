@@ -17,6 +17,7 @@ phases:
       - source ~/.bashrc
       - echo 'Check kubectl version'
       - kubectl version --short --client
+      # script to install package and check if already installed
       - chmod +x scripts/prerequisites.sh
       - sh scripts/prerequisites.sh
 
