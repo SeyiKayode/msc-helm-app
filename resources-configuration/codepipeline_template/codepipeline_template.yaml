@@ -21,6 +21,10 @@ Parameters:
   EksClusterName:
     Description: EKS cluster name
     Type: String
+  
+  GithubConnectionId:
+    Description: Github Connection Id
+    Type: String
 
   GithubBranch:
     Description: Github respository branch
@@ -111,11 +115,6 @@ Resources:
                   - ecr:*
                   - states:*
                   - appconfig:*
-  
-  GithubConnection:
-    Type: AWS::CodeStar::GitHubRepository
-    Properties:
-      ConnectionArn: !Sub ${ConnectionArn}
 
   CodeBuildPrepareProject:
     Type: AWS::CodeBuild::Project
@@ -194,7 +193,7 @@ Resources:
                 Version: '1'
                 Provider: CodeStarSourceConnection
               Configuration:
-                ConnectionArn: !Ref GithubConnection
+                ConnectionArn: !Sub 'arn:aws:codestar-connections:${AWS::Region}:${AWS::AccountId}:connection/${GithubConnectionId}'
                 BranchName: !Sub ${GithubBranch}
                 FullRepositoryId: !Sub ${GithubUser}/${GithubRepo}
               OutputArtifacts:
