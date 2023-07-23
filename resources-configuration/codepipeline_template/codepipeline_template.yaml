@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Create CodePipeline Resources Cloudformation
+Description: Create CodePipeline Resources
 
 Parameters:
   ConnectionArn: 

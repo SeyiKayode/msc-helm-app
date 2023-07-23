@@ -1,0 +1,10 @@
+[
+    {
+        "ParameterKey": "RepositoryName",
+        "ParameterValue": "node-sample-app"
+    },
+    {
+        "ParameterKey": "EksClusterName",
+        "ParameterValue": "msc-helm-cluster"
+    }
+]
