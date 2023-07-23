@@ -44,6 +44,7 @@ phases:
       - echo "check the chart in s3"
       - helm repo update
       - helm search repo dev-repo
+      - cd ..
 
   build:
     commands:
@@ -64,3 +65,4 @@ phases:
       - helm upgrade --install $HELM_CHART_NAME stable/app --version 0.1.0 --namespace dev
       # - chmod +x scripts/deploy_app.sh
       # - sh scripts/deploy_app.sh
+      - helm upgrade -i $EKS_CODEBUILD_APP_NAME-$ENV helm_charts/$EKS_CODEBUILD_APP_NAME -f helm_charts/$EKS_CODEBUILD_APP_NAME/values.$ENV.yaml --set image.repository=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME --set image.tag=$CODEBUILD_RESOLVED_SOURCE_VERSION
