@@ -19,10 +19,6 @@ phases:
       - kubectl version --short --client
       - chmod +x scripts/prerequisites.sh
       - sh scripts/prerequisites.sh
-      - echo "install helm s3 plugin"
-      - helm plugin install https://github.com/hypnoglow/helm-s3.git
-      - echo "list helm plugins"
-      - helm plugin list
 
   pre_build:
     commands:
@@ -32,19 +28,6 @@ phases:
       - kubectl config view --minify
       - echo check kubectl access
       - kubectl get svc
-      - echo "helm add the s3 as chart repository"
-      - helm s3 init s3://helm-kay-bucket/stable/app
-      - helm repo add dev-repo s3://helm-kay-bucket/stable/app/
-      - cd msc-helm-chart
-      - echo "helm package"
-      - helm package . >> output
-      - package=$(awk -F ':' '{print $2}' output)
-      - echo "helm push to s3"
-      - helm s3 push $package dev-repo --force
-      - echo "check the chart in s3"
-      - helm repo update
-      - helm search repo dev-repo
-      - cd ..
 
   build:
     commands:
@@ -61,8 +44,7 @@ phases:
   post_build:
     commands:
       - echo Push the latest image to cluster
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | helm registry login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      - helm upgrade --install $HELM_CHART_NAME stabl/app --version 0.1.0 --namespace dev
+      # - aws ecr get-login-password --region $AWS_DEFAULT_REGION | helm registry login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       # - chmod +x scripts/deploy_app.sh
       # - sh scripts/deploy_app.sh
-      # - helm upgrade --instal $HELM_CHART_NAME helm_charts/$EKS_CODEBUILD_APP_NAME -f helm_charts/$EKS_CODEBUILD_APP_NAME/values.$ENV.yaml --set image.repository=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME --set image.tag=$CODEBUILD_RESOLVED_SOURCE_VERSION
+      - helm upgrade --install $HELM_CHART_NAME $HELM_CHART_NAME/ -f $HELM_CHART_NAME/values.yaml --set image.repository=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME --set image.tag=$CODEBUILD_RESOLVED_SOURCE_VERSION
