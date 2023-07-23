@@ -1,0 +1,232 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Create CodePipeline Resources Cloudformation
+
+Parameters:
+  ConnectionArn: 
+    Description: Github Connection Arn
+    Type: String
+  
+  CodebuildProjectName:
+    Description: Codebuild project name
+    Type: String
+
+  ImageRepositoryName:
+    Description: ECR respository name
+    Type: String
+  
+  HelmChartName:
+    Description: Helm chart name
+    Type: String
+  
+  EksClusterName:
+    Description: EKS cluster name
+    Type: String
+  
+  GithubConnectionId:
+    Description: Github Connection Id
+    Type: String
+
+  GithubBranch:
+    Description: Github respository branch
+    Type: String
+
+  GithubUser:
+    Description: Github respository user
+    Type: String
+
+  GithubRepo:
+    Description: Github respository name
+    Type: String
+
+Resources:
+  ArtifactBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+
+  CodeBuildServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: "CodebuildAccessPolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+                - Effect: Allow
+                  Action:
+                    - s3:*
+                    - logs:*
+                    - sts:*
+                    - ecr:*
+                    - ssm:*
+                  Resource: "*"
+  
+  CodePipelineServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: "CodePipelineAccessPolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Resource: "*"
+                Effect: Allow
+                Action:
+                  - s3:*
+                  - logs:*
+                  - sts:*
+                  - codebuild:*
+                  - codecommit:*
+                  - codedeploy:*
+                  - iam:*
+                  - codestar-connections:*
+                  - elasticbeanstalk:*
+                  - ec2:*
+                  - elasticloadbalancing:*
+                  - autoscaling:*
+              - Resource: "*"
+                Effect: Allow
+                Action:
+                  - cloudwatch:*
+                  - sns:*
+                  - cloudformation:*
+                  - rds:*
+                  - sqs:*
+                  - ecs:*
+                  - devicefarm:*
+                  - lambda:*
+                  - opsworks:*
+                  - servicecatalog:*
+                  - ecr:*
+                  - states:*
+                  - appconfig:*
+
+  CodeBuildPrepareProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Name: !Sub '${CodebuildProjectName}-prepare'
+      ServiceRole: !Ref CodeBuildServiceRole
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: buildspec_prepare.yml
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:5.0
+        Type: LINUX_CONTAINER
+        PrivilegedMode: true
+        EnvironmentVariables:
+          - Name: AWS_DEFAULT_REGION
+            Value: !Sub ${AWS::Region}
+          - Name: AWS_ACCOUNT_ID
+            Value: !Sub ${AWS::AccountId}
+          - Name: IMAGE_REPO_NAME
+            Value: !Sub ${ImageRepositoryName}
+          - Name: HELM_CHART_NAME
+            Value: !Sub ${HelmChartName}
+          - Name: EKS_CLUSTER_NAME
+            Value: !Sub ${EksClusterName}
+      LogsConfig:
+        CloudWatchLogs:
+          GroupName: !Sub '${CodebuildProjectName}-prepare-log-group'
+          Status: ENABLED
+          StreamName: !Sub '${CodebuildProjectName}-prepare-logs'
+
+  CodeBuildDeployProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Name: !Sub '${CodebuildProjectName}-deploy'
+      ServiceRole: !Ref CodeBuildServiceRole
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: buildspec_deploy.yml
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:5.0
+        Type: LINUX_CONTAINER
+        PrivilegedMode: true
+        EnvironmentVariables:
+          - Name: AWS_DEFAULT_REGION
+            Value: !Sub ${AWS::Region}
+          - Name: AWS_ACCOUNT_ID
+            Value: !Sub ${AWS::AccountId}
+          - Name: IMAGE_REPO_NAME
+            Value: !Sub ${ImageRepositoryName}
+          - Name: HELM_CHART_NAME
+            Value: !Sub ${HelmChartName}
+          - Name: EKS_CLUSTER_NAME
+            Value: !Sub ${EksClusterName}
+      LogsConfig:
+        CloudWatchLogs:
+          GroupName: !Sub '${CodebuildProjectName}-deploy-log-group'
+          Status: ENABLED
+          StreamName: !Sub '${CodebuildProjectName}-deploy-logs'
+
+  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn: !GetAtt CodePipelineServiceRole.Arn
+      ArtifactStore:
+        Type: S3
+        Location: !Ref ArtifactBucket
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: Source
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Version: '1'
+                Provider: CodeStarSourceConnection
+              Configuration:
+                ConnectionArn: !Sub 'arn:aws:codestar-connections:${AWS::Region}:${AWS::AccountId}:connection/${GithubConnectionId}'
+                BranchName: !Sub ${GithubBranch}
+                FullRepositoryId: !Sub ${GithubUser}/${GithubRepo}
+                DetectChanges: true
+              OutputArtifacts:
+                - Name: code-artifact
+              RunOrder: 1
+        - Name: Build
+          Actions:
+            - Name: Build
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: '1'
+                Provider: CodeBuild
+              Configuration:
+                ProjectName: !Ref CodeBuildPrepareProject
+              InputArtifacts:
+                - Name: code-artifact
+              RunOrder: 1
+        - Name: Deploy
+          Actions:
+            - Name: Deploy
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: '1'
+                Provider: CodeBuild
+              Configuration:
+                ProjectName: !Ref CodeBuildDeployProject
+              InputArtifacts:
+                - Name: code-artifact
+              RunOrder: 1

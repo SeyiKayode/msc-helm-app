@@ -1,0 +1,41 @@
+version: 0.2
+run-as: root
+
+env:
+  parameter-store:
+    AWS_ACCESS_KEY_ID: "/test/kayode/access-key-id"
+    AWS_SECRET_ACCESS_KEY: "/test/kayode/access-key-secret"
+
+phases:
+  install:
+    commands:
+      - echo Installing app dependencies...
+      - curl -o kubectl curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.1/2023-04-19/bin/linux/amd64/kubectl
+      - chmod +x ./kubectl
+      - mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
+      - echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+      - source ~/.bashrc
+      - echo 'Check kubectl version'
+      - kubectl version --short --client
+      # script to install package and check if already installed
+      - chmod +x scripts/prerequisites.sh
+      - sh scripts/prerequisites.sh
+
+  pre_build:
+    commands:
+      - echo Logging in to Amazon EKS...
+      - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+      - echo check config
+      - kubectl config view --minify
+      - echo check kubectl access
+      - kubectl get svc
+
+  build:
+    commands:
+      - echo helm lint
+      - helm lint $HELM_CHART_NAME
+
+  post_build:
+    commands:
+      - echo dry run helm
+      - helm install $HELM_CHART_NAME --debug --dry-run $HELM_CHART_NAME
