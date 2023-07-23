@@ -26,11 +26,11 @@ Parameters:
     Description: Github respository branch
     Type: String
 
-  GitHubUser:
+  GithubUser:
     Description: Github respository user
     Type: String
 
-  GitHubRepo:
+  GithubRepo:
     Description: Github respository name
     Type: String
 
@@ -195,8 +195,8 @@ Resources:
                 Provider: CodeStarSourceConnection
               Configuration:
                 ConnectionArn: !Ref GithubConnection
-                BranchName: !Sub ${GitHubBranch}
-                FullRepositoryId: !Sub ${GitHubUser}/${GitHubRepo}
+                BranchName: !Sub ${GithubBranch}
+                FullRepositoryId: !Sub ${GithubUser}/${GithubRepo}
               OutputArtifacts:
                 - Name: SourceArtifact
               RunOrder: 1
