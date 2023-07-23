@@ -41,7 +41,7 @@ Parameters:
 Resources:
   ArtifactBucket:
     Type: AWS::S3::Bucket
-    DeletionPolicy: Delete
+    DeletionPolicy: Retain
 
   CodeBuildServiceRole:
     Type: AWS::IAM::Role
@@ -119,6 +119,8 @@ Resources:
   CodeBuildPrepareProject:
     Type: AWS::CodeBuild::Project
     Properties:
+      Artifacts:
+        Type: CODEPIPELINE
       Name: !Sub '${CodebuildProjectName}-prepare'
       ServiceRole: !Ref CodeBuildServiceRole
       Source:
@@ -128,6 +130,7 @@ Resources:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/amazonlinux2-x86_64-standard:5.0
         Type: LINUX_CONTAINER
+        PrivilegedMode: true
         EnvironmentVariables:
           - Name: AWS_DEFAULT_REGION
             Value: !Sub ${AWS::Region}
@@ -139,7 +142,6 @@ Resources:
             Value: !Sub ${HelmChartName}
           - Name: EKS_CLUSTER_NAME
             Value: !Sub ${EksClusterName}
-      PrivilegedMode: true
       LogsConfig:
         CloudWatchLogs:
           GroupName: !Sub '${CodebuildProjectName}-prepare-log-group'
@@ -149,6 +151,8 @@ Resources:
   CodeBuildDeployProject:
     Type: AWS::CodeBuild::Project
     Properties:
+      Artifacts:
+        Type: CODEPIPELINE
       Name: !Sub '${CodebuildProjectName}-deploy'
       ServiceRole: !Ref CodeBuildServiceRole
       Source:
@@ -158,6 +162,7 @@ Resources:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/amazonlinux2-x86_64-standard:5.0
         Type: LINUX_CONTAINER
+        PrivilegedMode: true
         EnvironmentVariables:
           - Name: AWS_DEFAULT_REGION
             Value: !Sub ${AWS::Region}
@@ -169,7 +174,6 @@ Resources:
             Value: !Sub ${HelmChartName}
           - Name: EKS_CLUSTER_NAME
             Value: !Sub ${EksClusterName}
-      PrivilegedMode: true
       LogsConfig:
         CloudWatchLogs:
           GroupName: !Sub '${CodebuildProjectName}-deploy-log-group'
