@@ -3,8 +3,8 @@ run-as: root
 
 env:
   parameter-store:
-    AWS_ACCESS_KEY_ID: "/test/kayode/access-key-id"
-    AWS_SECRET_ACCESS_KEY: "/test/kayode/access-key-secret"
+    AWS_ACCESS_KEY_ID: $SSM_PARAMS_ID_NAME
+    AWS_SECRET_ACCESS_KEY: $SSM_PARAMS_KEY_NAME
 
 phases:
   install:

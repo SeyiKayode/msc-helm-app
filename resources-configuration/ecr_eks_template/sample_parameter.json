@@ -1,10 +1,10 @@
 [
     {
         "ParameterKey": "ImageRepositoryName",
-        "ParameterValue": "node-sample-app"
+        "ParameterValue": ""
     },
     {
         "ParameterKey": "EksClusterName",
-        "ParameterValue": "msc-helm-cluster"
+        "ParameterValue": ""
     }
 ]

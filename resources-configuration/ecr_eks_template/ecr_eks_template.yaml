@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Create ECR and EKS Resources
 
 Parameters:
-  RepositoryName: 
+  ImageRepositoryName: 
     Description: Image repository name
     Type: String
   
@@ -37,7 +37,7 @@ Resources:
   ECRResource:
     Type: AWS::ECR::Repository
     Properties: 
-      RepositoryName: !Sub ${RepositoryName}
+      RepositoryName: !Sub ${ImageRepositoryName}
 
   ClusterSharedNodeSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'

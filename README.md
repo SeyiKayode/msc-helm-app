@@ -18,8 +18,14 @@
 - inside the "resources-configuration/ecr_eks_template/ecr_eks_template.yaml" file, it contains the cloudformation template script that creates aws ecr and aws eks
 - The cloudformation template creates various service roles, security groups, control planes, public and private subnets, vpc, epi, nat-gateway, internet-gateway and route tables
 
-- to create these resources the aws cli, configure your aws user profile with the command "aws configure --profile $YOUR_NAME", create a file named "resources-configuration/ecr_eks_template/ecr_eks_template.json" and write the environment parameters in it(i gitignored my json parameter file), cd into this directory "resources-configuration/ecr_eks_template/", run "chmod +x ecr_eks_template.sh", then run "./ecr_eks_template.sh"
+- there are 2 methods to create the cloudformation template
 
+- 1st Method -->
+- to create these resources the aws cli, configure your aws user profile with the command "aws configure --profile $YOUR_NAME"
+- $YOUR_NAME is the name you want to use to configure your aws cli profile 
+- create a file named "resources-configuration/ecr_eks_template/ecr_eks_template.json" and write the environment parameters in it (i gitignored my json parameter file but check the sample_parameter.json to see how it looks like and fill the ParameterValue), cd into this directory "resources-configuration/ecr_eks_template/", run "chmod +x ecr_eks_template.sh", inside the "ecr_eks_template.sh" file change "export AWS_PROFILE=kayode" into "export AWS_PROFILE=$YOUR_NAME" then run "./ecr_eks_template.sh"
+
+- 2nd Method -->
 - to create these resources using the aws console, go to cloudformation and use the "resources-configuration/ecr_eks_template/ecr_eks_template.yaml" file to create a cloudformation stack
 - the resources will be created and ready for use
 
@@ -36,8 +42,10 @@
 - The cloudformation template creates various service roles, codebuild and codepipeline resources
 - it makes use of "buildspec_prepare.yaml" and "buildspec_deploy.yaml" to run the installations of needed packages, connecting to our previously created eks cluster and packaging of the helm chart in the codepipeline
 
-- to create this pipeline using the aws cli, configure your aws user profile with the command "aws configure --profile $YOUR_NAME", create a file named "resources-configuration/codepipeline_template/codepipeline_template.json" and write the environment parameters in it(i gitignored my json parameter file), cd into this directory "resources-configuration/codepipeline_template/", run "chmod +x codepipeline_template.sh", then run "./codepipeline_template.sh"
+- 1st Method -->
+- to create this pipeline using the aws cli, we set our aws cli user profile that was configured earlier by modifying the "codepipeline_template.sh" file and change "export AWS_PROFILE=kayode" into "export AWS_PROFILE=$YOUR_NAME", create a file named "resources-configuration/codepipeline_template/codepipeline_template.json" and write the environment parameters in it (i gitignored my json parameter file but check the sample_parameter.json to see how it looks like and fill the ParameterValue), cd into this directory "resources-configuration/codepipeline_template/", run "chmod +x codepipeline_template.sh", then run "./codepipeline_template.sh"
 
+- 2nd Method -->
 - to create this pipeline using the aws console, go to cloudformation and use the "resources-configuration/codepipeline_template/codepipeline_template.yaml" file to create a cloudformation stack
 - the resources will be created and it will also begin the CI/CD process
 
