@@ -45,7 +45,5 @@ phases:
     commands:
       - echo Push the latest image to cluster
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | helm registry login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      - helm package $HELM_CHART_NAME
-      - export HELM_EXPERIMENTAL_OCI=1
-      - helm push $HELM_CHART_NAME-0.1.0.tgz oci://$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/
-      - helm upgrade --install $HELM_CHART_NAME oci://$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$HELM_CHART_NAME
+      - chmod +x scripts/deploy_app.sh
+      - sh scripts/deploy_app.sh
