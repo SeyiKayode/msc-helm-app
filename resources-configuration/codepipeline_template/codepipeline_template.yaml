@@ -202,7 +202,7 @@ Resources:
                 FullRepositoryId: !Sub ${GithubUser}/${GithubRepo}
                 DetectChanges: true
               OutputArtifacts:
-                - Name: SourceArtifact
+                - Name: code-artifact
               RunOrder: 1
         - Name: Build
           Actions:
@@ -215,9 +215,7 @@ Resources:
               Configuration:
                 ProjectName: !Ref CodeBuildPrepareProject
               InputArtifacts:
-                - Name: SourceArtifact
-              OutputArtifacts:
-                - Name: BuildArtifact
+                - Name: code-artifact
               RunOrder: 1
         - Name: Deploy
           Actions:
@@ -230,5 +228,5 @@ Resources:
               Configuration:
                 ProjectName: !Ref CodeBuildDeployProject
               InputArtifacts:
-                - Name: SourceArtifact
+                - Name: code-artifact
               RunOrder: 1
