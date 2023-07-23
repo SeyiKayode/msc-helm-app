@@ -23,7 +23,7 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon EKS...
-      - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $AWS_CLUSTER_NAME
+      - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
       - echo check config
       - kubectl config view --minify
       - echo check kubectl access
@@ -47,4 +47,4 @@ phases:
       # - aws ecr get-login-password --region $AWS_DEFAULT_REGION | helm registry login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       # - chmod +x scripts/deploy_app.sh
       # - sh scripts/deploy_app.sh
-      - helm upgrade --install $HELM_CHART_NAME $HELM_CHART_NAME/ -f $HELM_CHART_NAME/values.yaml --set image.repository=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME --set image.tag=$CODEBUILD_RESOLVED_SOURCE_VERSION
+      - helm upgrade --install $HELM_CHART_NAME $HELM_CHART_NAME/ -f $HELM_CHART_NAME/values.yaml --set image.repository=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME --set image.tag=$IMAGE_TAG
