@@ -33,7 +33,7 @@ phases:
       - echo check kubectl access
       - kubectl get svc
       - echo "helm add the s3 as chart repository"
-      - helm s3 init s3://helm-kay-bucket/stable/dev
+      - helm s3 init s3://helm-kay-bucket/stable/app
       - helm repo add dev-repo s3://helm-kay-bucket/stable/app/
       - cd msc-helm-chart
       - echo "helm package"
