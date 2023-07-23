@@ -200,6 +200,7 @@ Resources:
                 ConnectionArn: !Sub 'arn:aws:codestar-connections:${AWS::Region}:${AWS::AccountId}:connection/${GithubConnectionId}'
                 BranchName: !Sub ${GithubBranch}
                 FullRepositoryId: !Sub ${GithubUser}/${GithubRepo}
+                DetectChanges: true
               OutputArtifacts:
                 - Name: SourceArtifact
               RunOrder: 1
@@ -216,7 +217,7 @@ Resources:
               InputArtifacts:
                 - Name: SourceArtifact
               OutputArtifacts:
-                - Name: BuildOutput
+                - Name: BuildArtifact
               RunOrder: 1
         - Name: Deploy
           Actions:
