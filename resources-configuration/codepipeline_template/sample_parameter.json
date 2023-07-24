@@ -1,0 +1,42 @@
+[
+    {
+        "ParameterKey": "CodebuildProjectName",
+        "ParameterValue": ""
+    },
+    {
+        "ParameterKey": "ImageRepositoryName",
+        "ParameterValue": ""
+    },
+    {
+        "ParameterKey": "HelmChartName",
+        "ParameterValue": ""
+    },
+    {
+        "ParameterKey": "EksClusterName",
+        "ParameterValue": ""
+    },
+    {
+        "ParameterKey": "SsmParamsIdName",
+        "ParameterValue": ""
+    },
+    {
+        "ParameterKey": "SsmParamsKeyName",
+        "ParameterValue": ""
+    },
+    {
+        "ParameterKey": "GithubConnectionId",
+        "ParameterValue": ""
+    },
+    {
+        "ParameterKey": "GithubBranch",
+        "ParameterValue": ""
+    },
+    {
+        "ParameterKey": "GithubUser",
+        "ParameterValue": ""
+    },
+    {
+        "ParameterKey": "GithubRepo",
+        "ParameterValue": ""
+    }
+]

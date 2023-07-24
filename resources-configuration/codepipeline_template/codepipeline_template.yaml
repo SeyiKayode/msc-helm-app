@@ -2,10 +2,6 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Create CodePipeline Resources
 
 Parameters:
-  ConnectionArn: 
-    Description: Github Connection Arn
-    Type: String
-  
   CodebuildProjectName:
     Description: Codebuild project name
     Type: String
@@ -20,6 +16,14 @@ Parameters:
   
   EksClusterName:
     Description: EKS cluster name
+    Type: String
+
+  SsmParamsIdName:
+    Description: SSM parameters for id name
+    Type: String
+
+  SsmParamsKeyName:
+    Description: SSM parameters for key name
     Type: String
   
   GithubConnectionId:
@@ -142,6 +146,10 @@ Resources:
             Value: !Sub ${HelmChartName}
           - Name: EKS_CLUSTER_NAME
             Value: !Sub ${EksClusterName}
+          - Name: SSM_PARAMS_ID_NAME
+            Value: !Sub ${SsmParamsIdName}
+          - Name: SSM_PARAMS_KEY_NAME
+            Value: !Sub ${SsmParamsKeyName}
       LogsConfig:
         CloudWatchLogs:
           GroupName: !Sub '${CodebuildProjectName}-prepare-log-group'
@@ -174,6 +182,10 @@ Resources:
             Value: !Sub ${HelmChartName}
           - Name: EKS_CLUSTER_NAME
             Value: !Sub ${EksClusterName}
+          - Name: SSM_PARAMS_ID_NAME
+            Value: !Sub ${SsmParamsIdName}
+          - Name: SSM_PARAMS_KEY_NAME
+            Value: !Sub ${SsmParamsKeyName}
       LogsConfig:
         CloudWatchLogs:
           GroupName: !Sub '${CodebuildProjectName}-deploy-log-group'
