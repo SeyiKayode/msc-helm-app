@@ -21,12 +21,12 @@
 - there are 2 methods to create the cloudformation template
 
 - 1st Method -->
-- to create these resources the aws cli, configure your aws user profile with the command "aws configure --profile $YOUR_NAME"
+- to create these resources using the aws cli, configure your aws user profile with the command "aws configure --profile $YOUR_NAME"
 - $YOUR_NAME is the name you want to use to configure your aws cli profile 
 - create a file named "resources-configuration/ecr_eks_template/ecr_eks_template.json" and write the environment parameters in it (i gitignored my json parameter file but check the sample_parameter.json to see how it looks like and fill the ParameterValue), cd into this directory "resources-configuration/ecr_eks_template/", run "chmod +x ecr_eks_template.sh", inside the "ecr_eks_template.sh" file change "export AWS_PROFILE=kayode" into "export AWS_PROFILE=$YOUR_NAME" then run "./ecr_eks_template.sh"
 
 - 2nd Method -->
-- to create these resources using the aws console, go to cloudformation and use the "resources-configuration/ecr_eks_template/ecr_eks_template.yaml" file to create a cloudformation stack
+- to create these resources using the aws console, go to cloudformation and use the "resources-configuration/ecr_eks_template/ecr_eks_template.yaml" file to create a cloudformation stack and supply the environment parameters
 - the resources will be created and ready for use
 
 # Create helm chart for microservice application
@@ -46,7 +46,7 @@
 - to create this pipeline using the aws cli, we set our aws cli user profile that was configured earlier by modifying the "codepipeline_template.sh" file and change "export AWS_PROFILE=kayode" into "export AWS_PROFILE=$YOUR_NAME", create a file named "resources-configuration/codepipeline_template/codepipeline_template.json" and write the environment parameters in it (i gitignored my json parameter file but check the sample_parameter.json to see how it looks like and fill the ParameterValue), cd into this directory "resources-configuration/codepipeline_template/", run "chmod +x codepipeline_template.sh", then run "./codepipeline_template.sh"
 
 - 2nd Method -->
-- to create this pipeline using the aws console, go to cloudformation and use the "resources-configuration/codepipeline_template/codepipeline_template.yaml" file to create a cloudformation stack
+- to create this pipeline using the aws console, go to cloudformation and use the "resources-configuration/codepipeline_template/codepipeline_template.yaml" file to create a cloudformation stack and supply the environment parameters
 - the resources will be created and it will also begin the CI/CD process
 
 # Post Deployment
