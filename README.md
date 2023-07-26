@@ -37,7 +37,7 @@
 - inside "msc-helm-chart/templates/deployment.yaml", change ports containerPort to "8080"
 
 # Create AWS Codepipeline IaC to run the CI/CD deployment
-- after the aws ecr and aws eks cloudformation template has finsihed creating i.e "CREATE_COMPLETE" status, we proceed to create our CI/CD pipeline
+- after the aws ecr and aws eks cloudformation template has finished creating i.e "CREATE_COMPLETE" status, we proceed to create our CI/CD pipeline
 - inside the "resources-configuration/codepipeline_template/codepipeline_template.yaml" file, it contains the cloudformation template script that creates aws codebuild and codepipeline to begin our CI/CD process
 - The cloudformation template creates various service roles, codebuild and codepipeline resources
 - it makes use of "buildspec_prepare.yaml" and "buildspec_deploy.yaml" to run the installations of needed packages, connecting to our previously created eks cluster and packaging of the helm chart in the codepipeline
